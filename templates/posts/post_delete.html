@@ -1,0 +1,21 @@
+{% extends 'layouts/layout_for_post_create.html' %}
+
+{% block content %}
+
+<div class="md:flex items-center">
+    <div class="w-full md:max-w-sm mr-6 md:[&>*>*>p]:text-4xl">
+        {% include 'posts/post.html' %}
+    </div>
+    <div>
+        <h1>Удалить запись</h1>
+        <p class="mb-6">Вы действительно хотите удалить запись?</p>
+
+        <form method='POST'>
+            {% csrf_token %}
+            <button type="submit">Удалить</button>
+            <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Назад</a>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

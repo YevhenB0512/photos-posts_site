@@ -1,0 +1,90 @@
+{% extends 'layouts/lrl.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h1 class="mb-2">Редактировать профиль</h1>
+<div class="text-center flex flex-col items-center">
+    {% if user.image %}
+    <img id="avatar" class="w-36 h-36 rounded-full object-cover mb-4"
+         src="{{ user.image.url }}"/>
+    {% else %}
+    <img id="avatar" class="w-36 h-36 rounded-full object-cover mb-4"
+         src="{% static 'images/default-avatar.jpg' %}"/>
+    {% endif %}
+    <div class="text-center max-w-md">
+        <h1 id="realname">{%if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</h1>
+        <div class="text-gray-400 mb-2 -mt-3">@{{ user.username }}</div>
+    </div>
+</div>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>
+        <label for="id_image">Фото:</label>
+        <input type="file" name="image" accept="image/*" id="id_image">
+    </p>
+    <p>
+        <label for="id_first_name">Имя:</label>
+        <input type="text" name="first_name"
+               placeholder="Введите имя"
+               value="{{ form.first_name.value }}"
+               id="id_first_name" required>
+    </p>
+    <p>
+        <label for="id_last_name">Фамилия:</label>
+        <input type="text" name="last_name"
+               placeholder="Введите фамилию"
+               value="{{ form.last_name.value }}"
+               id="id_last_name">
+    </p>
+<!--    <p>-->
+<!--        <label for="id_email">Email:</label>-->
+<!--        <input type="email" name="email" value="bart@email.com" maxlength="254" required="" id="id_email">-->
+<!--    </p>-->
+    <p>
+        <label for="id_location">Город:</label>
+        <input type="text"
+               name="location"
+               value="{{ form.location.value|default_if_none:'' }}"
+               id="id_location"
+               placeholder="Напишите откуда Вы">
+    </p>
+    <p>
+        <label for="id_bio">О себе:</label>
+        <textarea name="bio" cols="40" rows="3"
+                  id="id_bio"
+                  placeholder="Несколько слов о себе">{{ form.bio.value|default_if_none:'' }}</textarea>
+    </p>
+    <button type="submit">Изменнить</button>
+    <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Отмена</a>
+</form>
+<a class="mt-12 hover:underline text-gray-500" href="">Удалить профиль</a>
+
+
+<script>
+
+    // This updates the avatar
+    const fileInput = document.querySelector('input[type="file"]');
+
+    fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const image = document.querySelector('#avatar');
+
+    if (file && file.type.includes('image')) {
+        const url = URL.createObjectURL(file);
+        image.src = url;
+    }
+    });
+
+    // This updates the name
+    const first_nameInput = document.getElementById('id_first_name');
+    const first_nameOutput = document.getElementById('realname');
+
+    first_nameInput.addEventListener('input', (event) => {
+    first_nameOutput.innerText = event.target.value;
+    });
+
+</script>
+
+{% endblock content %}
