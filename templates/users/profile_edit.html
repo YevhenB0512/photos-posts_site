@@ -14,8 +14,8 @@
          src="{% static 'images/default-avatar.jpg' %}"/>
     {% endif %}
     <div class="text-center max-w-md">
-        <h1 id="realname">{%if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</h1>
-        <div class="text-gray-400 mb-2 -mt-3">@{{ user.username }}</div>
+        <h1 id="realname">{{ user.name }}</h1>
+        <div class="text-gray-400 mb-2 -mt-3">@{{ user.name }}</div>
     </div>
 </div>
 <form method="POST" enctype="multipart/form-data">
@@ -59,7 +59,7 @@
     <button type="submit">Изменнить</button>
     <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Отмена</a>
 </form>
-<a class="mt-12 hover:underline text-gray-500" href="">Удалить профиль</a>
+<a class="mt-12 hover:underline text-gray-500" href="{% url 'users:delete' %}">Удалить профиль</a>
 
 
 <script>
