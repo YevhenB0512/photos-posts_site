@@ -1,3 +1,4 @@
+from django.templatetags.static import static
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -16,3 +17,15 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def avatar(self):
+        try:
+            avatar = self.image.url
+        except:
+            avatar = static('images/default-avatar.jpg')
+        return avatar
+
+    @property
+    def name(self):
+        return self.first_name if self.first_name else self.username
