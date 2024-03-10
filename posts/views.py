@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from .models import Post, Tag
 from .forms import PostCreateForm, PostEditForm
@@ -29,9 +30,11 @@ def post_detail(request, pk):
     return render(request, 'posts/post_detail.html', context)
 
 
+@login_required
 def post_create(request):
     if request.method == 'POST':
         form = PostCreateForm(data=request.POST, files=request.FILES)
+        form.instance.author = request.user
         if form.is_valid():
             form.save()
             return redirect('posts:home')
@@ -44,8 +47,9 @@ def post_create(request):
     return render(request, 'posts/post_create.html', context)
 
 
+@login_required
 def post_edit(request, pk):
-    post = get_object_or_404(Post, id=pk)
+    post = get_object_or_404(Post, id=pk, author=request.user)
     if request.method == "POST":
         form = PostEditForm(request.POST, instance=post)
         if form.is_valid():
@@ -60,8 +64,9 @@ def post_edit(request, pk):
     return render(request, 'posts/post_edit.html', context)
 
 
+@login_required
 def post_delete(request, pk):
-    post = get_object_or_404(Post, id=pk)
+    post = get_object_or_404(Post, id=pk, author=request.user)
 
     if request.method == 'POST':
         post.delete()

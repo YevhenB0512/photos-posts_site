@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from .forms import UserLoginForm, UserRegistrationForm, ProfileEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
+from .models import User
 
 
 def user_login(request):
@@ -55,8 +56,11 @@ def user_registration(request):
 
 
 @login_required
-def user_profile(request):
-    profile = request.user
+def user_profile(request, username=None):
+    if username:
+        profile = get_object_or_404(User, username=username)
+    else:
+        profile = request.user
     return render(request, 'users/profile.html', {'profile': profile})
 
 
@@ -71,3 +75,14 @@ def profile_edit(request):
     else:
         form = ProfileEditForm(instance=request.user)
     return render(request, 'users/profile_edit.html', {'form': form})
+
+
+@login_required
+def profile_delete(request):
+    user = request.user
+    if request.method == 'POST':
+        logout(request)
+        user.delete()
+        messages.success(request, 'Аккаунт удвлен')
+        return redirect('posts:home')
+    return render(request, 'users/profile_delete.html')
