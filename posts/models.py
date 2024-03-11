@@ -36,3 +36,48 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.SET_NULL,
+                               null=True, related_name='comments', verbose_name='Автор')
+    parent_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', verbose_name='Пост')
+    body = models.CharField(max_length=255, verbose_name='Комментарий')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
+    id = models.CharField(max_length=100, default=uuid.uuid4, unique=True, primary_key=True,
+                          editable=False, verbose_name='ID')
+
+    class Meta:
+        db_table = 'comment'
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ('-created', )
+
+    def __str__(self):
+        try:
+            return f'{self.author.username}: {self.body[0:30]}'
+        except:
+            return f'Автор удвлен: {self.body[0:30]}'
+
+
+class Reply(models.Model):
+    author = models.ForeignKey(User, on_delete=models.SET_NULL,
+                               null=True, related_name='replies', verbose_name='Автор')
+    parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies', verbose_name='Ответы')
+    body = models.CharField(max_length=255, verbose_name='Комментарий')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
+    id = models.CharField(max_length=100, default=uuid.uuid4, unique=True, primary_key=True,
+                          editable=False, verbose_name='ID')
+
+    class Meta:
+        db_table = 'reply'
+        verbose_name = 'Ответ'
+        verbose_name_plural = 'Ответы'
+        ordering = ('-created', )
+
+    def __str__(self):
+        try:
+            return f'{self.author.username}: {self.body[0:30]}'
+        except:
+            return f'Автор удвлен: {self.body[0:30]}'
+
