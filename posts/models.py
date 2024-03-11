@@ -59,6 +59,7 @@ class Comment(models.Model):
                                null=True, related_name='comments', verbose_name='Автор')
     parent_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', verbose_name='Пост')
     body = models.CharField(max_length=255, verbose_name='Комментарий')
+    likes = models.ManyToManyField(User, related_name='likedcomments', through='LikedComment')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
     id = models.CharField(max_length=100, default=uuid.uuid4, unique=True, primary_key=True,
                           editable=False, verbose_name='ID')
@@ -74,6 +75,21 @@ class Comment(models.Model):
             return f'{self.author.username}: {self.body[0:30]}'
         except:
             return f'Автор удвлен: {self.body[0:30]}'
+
+
+class LikedComment(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, verbose_name='Комментарий')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
+
+    class Meta:
+        db_table = 'likedcomment'
+        verbose_name = 'Понравившийся комментарий'
+        verbose_name_plural = 'Понравившиеся комментарии'
+        ordering = ('-created',)
+
+    def __str__(self):
+        return f'{self.user.username}: {self.comment.body[:30]}'
 
 
 class Reply(models.Model):
