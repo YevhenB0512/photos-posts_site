@@ -26,6 +26,7 @@ class Post(models.Model):
     body = models.TextField(verbose_name='Запись')
     tags = models.ManyToManyField(Tag, verbose_name='Теги')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='posts', verbose_name='Автор')
+    likes = models.ManyToManyField(User, related_name='likedposts', through='LikedPost')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
 
     class Meta:
@@ -36,6 +37,21 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class LikedPost(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Запись')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
+
+    class Meta:
+        db_table = 'likedpost'
+        verbose_name = 'Лайки'
+        verbose_name_plural = 'Лайки'
+        ordering = ('-created',)
+
+    def __str__(self):
+        return f'{self.user.username}: {self.post.title}'
 
 
 class Comment(models.Model):

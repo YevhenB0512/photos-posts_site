@@ -1,10 +1,15 @@
 from django.contrib import admin
-from .models import Post, Tag, Comment, Reply
+from .models import Post, Tag, Comment, Reply, LikedPost
 
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'body', 'created')
+
+
+@admin.register(LikedPost)
+class LikedPostAdmin(admin.ModelAdmin):
+    list_display = ('user', 'post', 'created')
 
 
 @admin.register(Tag)
