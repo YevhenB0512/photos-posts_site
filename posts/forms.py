@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Post
+from .models import Post, Comment, Reply
 
 
 class PostCreateForm(ModelForm):
@@ -40,3 +40,26 @@ class PostEditForm(ModelForm):
             'tags': forms.CheckboxSelectMultiple(),
         }
 
+
+class CommentCreateForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('body', )
+        widgets = {
+            'body': forms.TextInput(attrs={'placeholder': 'Оставь комментарий ...', }),
+        }
+        labels = {
+            'body': '',
+        }
+
+
+class ReplyCreateForm(ModelForm):
+    class Meta:
+        model = Reply
+        fields = ('body', )
+        widgets = {
+            'body': forms.TextInput(attrs={'placeholder': 'Ответить на комментарий ...', 'class': '!text-sm'}),
+        }
+        labels = {
+            'body': '',
+        }
