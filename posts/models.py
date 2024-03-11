@@ -97,6 +97,7 @@ class Reply(models.Model):
                                null=True, related_name='replies', verbose_name='Автор')
     parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies', verbose_name='Ответы')
     body = models.CharField(max_length=255, verbose_name='Комментарий')
+    likes = models.ManyToManyField(User, related_name='likedreplies', through='LikedReply')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
     id = models.CharField(max_length=100, default=uuid.uuid4, unique=True, primary_key=True,
                           editable=False, verbose_name='ID')
@@ -113,3 +114,17 @@ class Reply(models.Model):
         except:
             return f'Автор удвлен: {self.body[0:30]}'
 
+
+class LikedReply(models.Model):
+    reply = models.ForeignKey(Reply, on_delete=models.CASCADE, verbose_name='Ответ')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
+
+    class Meta:
+        db_table = 'likedreply'
+        verbose_name = 'Понравившийся ответ'
+        verbose_name_plural = 'Понравившиеся ответы'
+        ordering = ('-created',)
+
+    def __str__(self):
+        return f'{self.user.username}: {self.reply.body[:30]}'
