@@ -1,0 +1,17 @@
+{% extends 'layouts/layout_for_post_create.html' %}
+
+{% block content %}
+
+<h1>Удалить комментарий</h1>
+
+{% include 'posts/comment.html' %}
+
+<p class="my-6">Вы уверены что хотите удалить этот комментарий?</p>
+
+<form method='POST'>
+    {% csrf_token %}
+    <button type="submit">Да, удалить</button>
+    <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Отмена</a>
+</form>
+
+{% endblock content %}

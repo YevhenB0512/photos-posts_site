@@ -56,7 +56,7 @@
                   id="id_bio"
                   placeholder="Несколько слов о себе">{{ form.bio.value|default_if_none:'' }}</textarea>
     </p>
-    <button type="submit">Изменнить</button>
+    <button type="submit">Применнить</button>
     <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Отмена</a>
 </form>
 <a class="mt-12 hover:underline text-gray-500" href="{% url 'users:delete' %}">Удалить профиль</a>
