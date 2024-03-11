@@ -46,7 +46,7 @@ def user_registration(request):
             user = form.instance
             login(request, user)
             messages.success(request, f'{user.username}, Вы успешно зарегистрированы ')
-            return redirect(reverse('posts:home'))
+            return redirect(reverse('users:edit'))
 
     form = UserRegistrationForm()
     context = {
