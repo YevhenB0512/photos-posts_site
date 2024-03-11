@@ -14,7 +14,7 @@ class LikedPostAdmin(admin.ModelAdmin):
 
 @admin.register(LikedComment)
 class LikedCommentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'post', 'created')
+    list_display = ('user', 'comment', 'created')
 
 
 @admin.register(Tag)
