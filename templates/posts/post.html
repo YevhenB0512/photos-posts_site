@@ -36,7 +36,7 @@
             <a class="font-bold hover:underline" href="{% url 'posts:detail' post.id %}">
                 {% if post.comments.count %}
                 Комментариев
-                <span class="font-light text-gray-500 ml-1">{{ post.comments.count }}</span>
+                <span id="commentscount-{{ post.id }}" class="font-light text-gray-500 ml-1">{{ post.comments.count }}</span>
                 {% else %}
                     {% if user.is_authenticated %}
                     Оставь комментарий

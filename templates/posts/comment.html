@@ -21,14 +21,16 @@
     </p>
     <div x-data="{ repliesOpen: false }" class="flex items-center justify-between flex-wrap text-sm px-2">
         <a @click="repliesOpen = !repliesOpen" class="font-bold hover:underline cursor-pointer">
+            {% if comment.replies.count or user.is_authenticated %}
             <div class="inline-block" x-bind:class="repliesOpen && 'rotate-90 duration-300'">
                 <svg transform="rotate(90)" width="9" height="9" viewBox="0 0 25 25">
                     <path d="M24 22h-24l12-20z"/>
                 </svg>
             </div>
+            {% endif %}
             {% if comment.replies.count %}
             Ответы
-            <span class="font-light text-gray-500 ml-1">{{comment.replies.count}}</span>
+            <span  id="repliescount-{{ comment.id }}" class="font-light text-gray-500 ml-1">{{comment.replies.count}}</span>
             {% else %}
             {% if user.is_authenticated %} Ответить {% endif %}
             {% endif %}
@@ -48,11 +50,16 @@
             {% include 'posts/reply.html' %}
             {% endfor %}
 
-            <form action="{% url 'posts:sent_reply' comment.id %}" method="POST" class="replyform flex justify-between" autocomplete="off">
+            {% if user.is_authenticated %}
+            <form class="replyform flex justify-between" autocomplete="off"
+                  hx-post="{% url 'posts:sent_reply' comment.id %}"
+                  hx-target="this"
+                  hx-swap="outerHTML">
                 {% csrf_token %}
                 {{ replyform }}
                 <button class="block" type="submit">Отправить</button>
             </form>
+            {% endif %}
         </div>
     </div>
 </comment>
