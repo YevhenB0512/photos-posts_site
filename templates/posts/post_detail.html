@@ -22,9 +22,12 @@
 
 {% if post.comments.count %}
 <div class="mb-20">
-    <div id="tabs" class="ml-4 flex gap-1 mb-4">
-        <a class="tab selected">Самые новые</a>
-        <a class="tab">Больше лайков</a>
+    <div id="tabs" class="ml-4 flex gap-1 mb-4"
+         hx-target="#tab-contents"
+         hx-swap="innerHTML"
+         _="on htmx:afterOnLoad take .selected for event.target">
+        <a hx-get="{% url 'posts:detail' post.id %}" class="tab selected">Самые новые</a>
+        <a hx-get="{% url 'posts:detail' post.id %}?top" class="tab">Больше лайков</a>
     </div>
 
     <div id="tab-contents">
