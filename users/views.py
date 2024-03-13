@@ -1,6 +1,10 @@
+from django.db.models import Count
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
+from posts.forms import ReplyCreateForm
+from posts.models import Post
 from .forms import UserLoginForm, UserRegistrationForm, ProfileEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -60,8 +64,31 @@ def user_profile(request, username=None):
     if username:
         profile = get_object_or_404(User, username=username)
     else:
-        profile = request.user
-    return render(request, 'users/profile.html', {'profile': profile})
+        try:
+            profile = request.user
+        except:
+            raise Http404()
+
+    posts = profile.posts.all()
+
+    if request.htmx:
+        if 'top-posts' in request.GET:
+            posts = profile.posts.annotate(num_likes=Count('likes')).filter(num_likes__gt=0).order_by('-num_likes')
+        if 'top-comments' in request.GET:
+            comments = profile.comments.annotate(num_likes=Count('likes')).filter(num_likes__gt=0).order_by('-num_likes')
+            replyform = ReplyCreateForm()
+            return render(request, 'snippets/loop_profile_comments.html', {'comments': comments,
+                                                                           'replyform': replyform})
+        if 'liked-posts' in request.GET:
+            posts = profile.likedposts.order_by('-likedpost__created')
+        return render(request, 'snippets/loop_profile_posts.html', {'posts': posts})
+
+    context = {
+        'profile': profile,
+        'posts': posts
+    }
+
+    return render(request, 'users/profile.html', context)
 
 
 @login_required

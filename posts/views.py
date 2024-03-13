@@ -13,11 +13,8 @@ def home(request, tag=None):
     else:
         posts = Post.objects.all()
 
-    categories = Tag.objects.all()
-
     context = {
         'posts': posts,
-        'categories': categories,
         'tag': tag
     }
     return render(request, 'posts/home.html', context)
@@ -33,8 +30,11 @@ def post_detail(request, pk):
             comments = post.comments.annotate(num_likes=Count('likes')).filter(num_likes__gt=0).order_by('-num_likes')
         else:
             comments = post.comments.all()
-        return render(request, 'snippets/loop_post_detail_comments.html', {'comments': comments,
-                                                                           'replyform': replyform})
+        context = {
+            'comments': comments,
+            'replyform': replyform
+        }
+        return render(request, 'snippets/loop_post_detail_comments.html', context)
 
     context = {
         'post': post,
@@ -81,7 +81,6 @@ def post_edit(request, pk):
 @login_required
 def post_delete(request, pk):
     post = get_object_or_404(Post, id=pk, author=request.user)
-
     if request.method == 'POST':
         post.delete()
         messages.success(request, 'Запись удалена')
