@@ -3,6 +3,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
+from inbox.forms import InboxNewMessageForm
 from posts.forms import ReplyCreateForm
 from posts.models import Post
 from .forms import UserLoginForm, UserRegistrationForm, ProfileEditForm
@@ -83,9 +84,12 @@ def user_profile(request, username=None):
             posts = profile.likedposts.order_by('-likedpost__created')
         return render(request, 'snippets/loop_profile_posts.html', {'posts': posts})
 
+    form = InboxNewMessageForm()
+
     context = {
         'profile': profile,
-        'posts': posts
+        'posts': posts,
+        'new_message_form': form
     }
 
     return render(request, 'users/profile.html', context)
