@@ -22,7 +22,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('posts.urls', namespace='posts')),
-    path('user/', include('users.urls', namespace='users'))
+    path('user/', include('users.urls', namespace='users')),
+    path('inbox/', include('inbox.urls', namespace='inbox')),
 ]
 
 if settings.DEBUG == True:

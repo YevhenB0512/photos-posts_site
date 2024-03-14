@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 
     'posts',
     'users',
+    'inbox',
 ]
 
 MIDDLEWARE = [
@@ -132,4 +133,4 @@ AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = '/user/login/'
 
-ACCOUNT_USERNAME_BLACKLIST = ['admin', 'accounts', 'profile', 'category', 'post']
+ACCOUNT_USERNAME_BLACKLIST = ['admin', 'accounts', 'profile', 'category', 'post', 'inbox']
