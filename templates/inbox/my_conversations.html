@@ -5,9 +5,16 @@
            class="flex items-center justify-center lg:justify-normal gap-1 hover:bg-zinc-200 rounded-full sm:rounded-lg p-1.5 sm:p-4 cursor-pointer">
             {% for participant in c.participants.all %}
                 {% if participant != request.user %}
-            <img class="w-11 h-11 lg:w-10 lg:h-10 object-cover rounded-full"
-                 src="{{ participant.avatar }}">
-            <div class="hidden lg:block font-bold ml-1">{{ participant.name }}</div>
+                    <div class="absolute top-3 left-11 [&>*]:border-2 [&>*]:border-gray-100"
+                         hx-get="{% url 'inbox:notify_new_message' c.id %}"
+                         hx-trigger="load"
+                         hx-target="this"
+                         hx-swap="innerHTML">
+
+                    </div>
+                    <img class="w-11 h-11 lg:w-10 lg:h-10 object-cover rounded-full"
+                        src="{{ participant.avatar }}">
+                    <div class="hidden lg:block font-bold ml-1">{{ participant.name }}</div>
                 {% endif %}
             {% endfor %}
         </a>

@@ -27,7 +27,15 @@
             {% if user.is_authenticated %}
             <li><a href="/">Главная</a></li>
             <li><a href="{% url 'posts:create' %}">Создать запись</a></li>
-            <li><a href="{% url 'inbox:inbox' %}">Сообщения</a></li>
+            <li class="relative">
+                <div class="absolute top-2 right-0"
+                     hx-get="{% url 'inbox:notify_inbox' %}"
+                     hx-trigger="load"
+                     hx-target="this"
+                     hx-swap="innerHTML">
+                </div>
+                <a href="{% url 'inbox:inbox' %}">Сообщения</a>
+            </li>
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false"
                    class="cursor-pointer select-none">
