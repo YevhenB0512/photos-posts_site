@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.utils.timesince import timesince
 
 from users.models import User
+from cryptography.fernet import Fernet
+from django.conf import settings
 
 
 class InboxMessage(models.Model):
@@ -24,6 +26,13 @@ class InboxMessage(models.Model):
     def __str__(self):
         time_since = timesince(self.created, timezone.now())
         return f'[{self.sender.username} : {time_since} назад]'
+
+    @property
+    def body_decrypted(self):
+        f = Fernet(settings.ENCRYPT_KEY)
+        message_decrypted = f.decrypt(self.body)
+        message_decoded = message_decrypted.decode('utf-8')
+        return message_decoded
 
 
 class Conversation(models.Model):

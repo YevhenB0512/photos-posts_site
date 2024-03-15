@@ -7,6 +7,11 @@ from django.utils import timezone
 from users.models import User
 from .models import InboxMessage, Conversation
 from .forms import InboxNewMessageForm
+from cryptography.fernet import Fernet
+from django.conf import settings
+
+
+f = Fernet(settings.ENCRYPT_KEY)
 
 
 @login_required
@@ -59,7 +64,15 @@ def new_message(request, recipient_id):
         form = InboxNewMessageForm(data=request.POST)
         if form.is_valid():
             message = form.save(commit=False)
+
+            message_original = form.cleaned_data['body']
+            message_bytes = message_original.encode('utf-8')
+            message_encrypted = f.encrypt(message_bytes)
+            message_decoded = message_encrypted.decode('utf-8')
+            message.body = message_decoded
+
             message.sender = request.user
+
             my_conversations = request.user.conversations.all()
             for c in my_conversations:
                 if recipient in c.participants.all():
@@ -94,6 +107,13 @@ def new_reply(request, conversation_id):
         form = InboxNewMessageForm(data=request.POST)
         if form.is_valid():
             message = form.save(commit=False)
+
+            message_original = form.cleaned_data['body']
+            message_bytes = message_original.encode('utf-8')
+            message_encrypted = f.encrypt(message_bytes)
+            message_decoded = message_encrypted.decode('utf-8')
+            message.body = message_decoded
+
             message.sender = request.user
             message.conversation = conversation
             message.save()
