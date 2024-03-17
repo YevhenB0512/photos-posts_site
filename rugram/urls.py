@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('posts.urls', namespace='posts')),
     path('user/', include('users.urls', namespace='users')),
     path('inbox/', include('inbox.urls', namespace='inbox')),
+    path('api/v1/', include('rugram_api.urls')),
 ]
 
 if settings.DEBUG == True:

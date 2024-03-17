@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'posts',
     'users',
     'inbox',
+    'rest_framework',
+    'rugram_api',
 ]
 
 MIDDLEWARE = [
